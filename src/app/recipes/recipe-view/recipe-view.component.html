@@ -1,0 +1,35 @@
+<div class="center">
+  <button type="button" mat-fab extended [routerLink]="'/'">
+    <mat-icon fontIcon="home"/>Home
+  </button>
+  <button type="button" mat-fab extended [routerLink]="`/recipe-edit-component/${getRecipeItem.id}`">
+    <mat-icon fontIcon="edit"/> Edit
+  </button>
+</div>
+<mat-card appearance="outlined" class="center">
+  <mat-card-content></mat-card-content>
+  <mat-card-header>
+    <mat-card-title
+      ><h1>
+        {{ getRecipeItem.title }}
+      </h1>
+    </mat-card-title>
+    <mat-card-subtitle><h3>Ingredients:</h3></mat-card-subtitle>
+    @for (ingredients of getRecipeItem.ingredients; track ingredients ){
+    <mat-card-subtitle>
+      <p>
+        {{ ingredients.quanity }} {{ ingredients.unit }} of
+        {{ ingredients.name }}
+      </p></mat-card-subtitle
+    >
+    }
+  </mat-card-header>
+  <mat-card-content>
+    <h2>Process</h2>
+    <p>
+      {{ getRecipeItem.process }}
+    </p>
+  </mat-card-content>
+</mat-card>
+
+

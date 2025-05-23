@@ -1,0 +1,22 @@
+<div>
+  <h2>My Secret Recipes</h2>
+  <!-- Toggle to show favourite vs not favourite  -->
+  <select name="filter-item" id="filter-item" (change)="onChangeFilterTemp(filter.value)" #filter>
+    <option value="show-all">Show All</option>
+    <option value="show-favourites">Show Favourite</option>
+    <option value="show-non-favourites">Show Non-Favourite</option>
+  </select>
+
+  <ul>
+    @for (recipe of showRecipesTemp(); track recipe.id){
+      @if (recipe.favourites === true ){
+        <li><app-recipe-item [recipe]="recipe"/></li>
+      }
+    }
+    @for (recipe of showRecipesTemp(); track recipe.id){
+      @if (recipe.favourites === false){
+        <li><app-recipe-item [recipe]="recipe"/></li>
+      }
+    }
+  </ul>
+</div>

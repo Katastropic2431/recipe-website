@@ -1,0 +1,27 @@
+mat-card{
+  color:black;
+  background-color: grey;
+  max-width: 400px;
+  position: middle;
+}
+
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+button{
+  background-color: #fffc3f;
+  color:#7e7c76;
+  width: 10rem;
+  height:2rem;
+}
+
+div {
+  text-align: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}

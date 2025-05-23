@@ -1,0 +1,26 @@
+<article [class]="{ favourites: recipe().favourites === true }">
+  <header>
+    <h3>{{ recipe().title }}</h3>
+    <p id="ingredients">
+      @for (ingredient of recipe().ingredients; track $index){
+      {{ ingredient.name }}
+      }
+    </p>
+  </header>
+
+  <p id="process">{{ recipe().process }}</p>
+  <form>
+      <button type="button" mat-fab extended [routerLink]="`/recipe-view-component/${recipe().id}`">
+        <mat-icon fontIcon="visibility"></mat-icon>
+        View
+      </button>
+    <!-- <a routerLink="/recipe-edit-component" routerLinkActive="activebutton">testing</a> -->
+
+    <button type="button" mat-fab extended id="favourite" (click)="onToggleFavourite(recipe().id)">
+      <mat-icon fontIcon="favorite"></mat-icon>Favourite
+    </button>
+    <button type="button" mat-fab extended (click)="onRemoveRecipe(recipe().id)">
+      <mat-icon fontIcon="delete"></mat-icon>Delete
+    </button>
+  </form>
+</article>

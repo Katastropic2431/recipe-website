@@ -1,0 +1,62 @@
+<form (ngSubmit)="onSubmit()" autocomplete="off">
+  <mat-form-field appearance="fill">
+    <mat-label for="title">Title</mat-label>
+    <input
+      matInput
+      placeholder="Enter Title"
+      type="text"
+      id="title"
+      name="title"
+      [(ngModel)]="enteredTitle"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label for="ingredients">Ingredients</mat-label>
+    <input
+      matInput
+      placeholder="Enter Ingredients"
+      type="text"
+      id="ingredients"
+      name="ingredients"
+      [(ngModel)]="enteredIngredients"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label for="quanity">Quanity</mat-label>
+    <input
+      matInput
+      placeholder="Enter Quanity"
+      type="number"
+      id="quanity"
+      name="quanity"
+      [(ngModel)]="enteredQuanity"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label for="unit">Unit</mat-label>
+    <mat-select name="unit" id="unit" [(ngModel)]="enteredUnit">
+      <mat-option value="tablespoon">tablespoon</mat-option>
+      <mat-option value="teaspoon">teaspoon</mat-option>
+      <mat-option value="cup">cup</mat-option>
+      <mat-option value="kilogram">kilogram</mat-option>
+      <mat-option value="gram">gram</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <p id="actions">
+    <button type="button" (click)="onAddIngredient()">Add Ingredient</button>
+  </p>
+  <mat-form-field appearance="fill" style="width: 100%">
+    <mat-label for="process">Process</mat-label>
+    <textarea
+      matInput
+      placeholder="Enter Process please"
+      id="process"
+      name="process"
+      [(ngModel)]="enteredProcess"
+    ></textarea>
+  </mat-form-field>
+  <p id="actions">
+    <button type="submit">Add Recipe</button>
+  </p>
+</form>
