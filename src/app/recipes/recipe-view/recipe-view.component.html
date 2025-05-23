@@ -1,35 +1,43 @@
 <div class="center">
   <button type="button" mat-fab extended [routerLink]="'/'">
-    <mat-icon fontIcon="home"/>Home
+    <mat-icon fontIcon="home" />Home
   </button>
-  <button type="button" mat-fab extended [routerLink]="`/recipe-edit-component/${getRecipeItem.id}`">
-    <mat-icon fontIcon="edit"/> Edit
+  <button
+    type="button"
+    mat-fab
+    extended
+    [routerLink]="`/recipe-edit-component/${getRecipeItem.id}`"
+  >
+    <mat-icon fontIcon="edit" /> Edit
   </button>
 </div>
-<mat-card appearance="outlined" class="center">
-  <mat-card-content></mat-card-content>
-  <mat-card-header>
-    <mat-card-title
-      ><h1>
-        {{ getRecipeItem.title }}
-      </h1>
-    </mat-card-title>
-    <mat-card-subtitle><h3>Ingredients:</h3></mat-card-subtitle>
+<mat-card class="recipe-card">
+  <div class="section-row">
+    <h1>{{ getRecipeItem.title }}</h1>
+    <button mat-fab extended class="edit-button" (click)="openDialogEditTitle()">
+      Edit Title
+    </button>
+  </div>
+
+  <div class="section-row">
+    <h2>Ingredients:</h2>
+    <button mat-fab extended class="edit-button" (click)="openDialog()">
+      Edit Ingredients
+    </button>
+  </div>
+  <ol>
     @for (ingredients of getRecipeItem.ingredients; track ingredients ){
-    <mat-card-subtitle>
-      <p>
-        {{ ingredients.quanity }} {{ ingredients.unit }} of
-        {{ ingredients.name }}
-      </p></mat-card-subtitle
-    >
+    <li>
+      {{ ingredients.quanity }} {{ ingredients.unit }} of {{ ingredients.name }}
+    </li>
     }
-  </mat-card-header>
-  <mat-card-content>
+  </ol>
+
+  <div class="section-row">
     <h2>Process</h2>
-    <p>
-      {{ getRecipeItem.process }}
-    </p>
-  </mat-card-content>
+    <button mat-fab extended class="edit-button" (click)="openDialogEditProcess()">
+      Edit Process
+    </button>
+  </div>
+  <p>{{ getRecipeItem.process }}</p>
 </mat-card>
-
-

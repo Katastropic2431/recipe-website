@@ -24,10 +24,6 @@ export class RecipesService {
     this.ingredientList.push(ingredient);
   }
 
-  // getRecipe(recipeId: string){
-  //   this.recipes.update((recipe)=> recipe.filter((recipe)=> recipe.id === recipeId ))
-  // }
-
   addRecipe(title: string, process: string){
     const newRecipe: Recipe = {
       id: Date.now().toString(),
@@ -64,7 +60,30 @@ export class RecipesService {
     this.saveRecipes();
   }
 
-  // edit
+  // edit title
+  editRecipeTitle(recipeId: string, title: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, title: title}
+      } else {
+        return recipe;
+      }
+    }));
+    this.saveRecipes();
+  }
+
+  // edit process
+  editRecipeProcess(recipeId: string, process: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, process: process}
+      } else {
+        return recipe;
+      }
+    }));
+    this.saveRecipes();
+  }
+
 
   // save recipes
   saveRecipes(){
