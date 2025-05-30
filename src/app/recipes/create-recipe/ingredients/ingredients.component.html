@@ -1,0 +1,48 @@
+<form  class = "form-shadow-box" (ngSubmit)="onSubmit()" autocomplete="off">
+  <mat-form-field appearance="fill" [style.width.vw]="37">
+    <mat-label for="ingredients">Ingredients</mat-label>
+    <input
+      matInput
+      placeholder="Enter Ingredients"
+      type="text"
+      id="ingredients"
+      name="ingredients"
+      [(ngModel)]="enteredIngredients"
+    />
+  </mat-form-field>
+  <mat-form-field [style.width.vw]="15" appearance="fill">
+    <mat-label for="quantity">Quantity</mat-label>
+    <input
+      matInput
+      placeholder="Enter Quanity"
+      type="quantity"
+      id="quantity"
+      name="quantity"
+      [(ngModel)]="enteredQuanity"
+    />
+  </mat-form-field>
+  <mat-form-field [style.width.vw]="15" appearance="fill">
+    <mat-label for="unit">Unit</mat-label>
+    <mat-select matInput name="unit" id="unit" [(ngModel)]="enteredUnit">
+      <mat-option value="tablespoon">tablespoon</mat-option>
+      <mat-option value="teaspoon">teaspoon</mat-option>
+      <mat-option value="cup">cup</mat-option>
+      <mat-option value="kilogram">kilogram</mat-option>
+      <mat-option value="gram">gram</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <p id="actions">
+    <button type="button" (click)="onAddIngredient()">Add Ingredient</button>
+  </p>
+</form>
+
+@if(ingredientsList()?.length!==0){
+  <div>
+    <ol>
+      @for(ingredient of ingredientsList(); track $index){
+        <li>{{ingredient.quanity}} {{ingredient.unit}} of {{ingredient.name}}</li>
+      }
+    </ol>
+  </div>
+}

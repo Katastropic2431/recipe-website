@@ -1,0 +1,26 @@
+<form class = "form-shadow-box" (ngSubmit)="onSubmit()" autocomplete="off">
+  <mat-form-field appearance="fill">
+    <mat-label for="title">Title</mat-label>
+    <input
+      matInput
+      placeholder="Enter Title"
+      type="text"
+      id="title"
+      name="title"
+      [(ngModel)]="enteredTitle"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill" style="width: 100%">
+    <mat-label for="process">Process</mat-label>
+    <textarea
+      matInput
+      placeholder="Enter Process please"
+      id="process"
+      name="process"
+      [(ngModel)]="enteredProcess"
+    ></textarea>
+  </mat-form-field>
+  <p id="actions">
+    <button type="submit">Add Recipe</button>
+  </p>
+</form>

@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Recipe } from './recipe.model';
-import { Ingredients } from './ingredients/ingredients.model';
+import { Ingredients } from './create-recipe/ingredients/ingredients.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,10 @@ export class RecipesService {
   // Add ingredients to recipe
   addIngredient(ingredient: Ingredients){
     this.ingredientList.push(ingredient);
+  }
+
+  removeIngredient(index: number){
+    this.ingredientList = this.ingredientList.filter((ingredient)=> ingredient.name)
   }
 
   addRecipe(title: string, process: string){

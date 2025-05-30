@@ -1,9 +1,0 @@
-@if(ingredientsList()?.length!==0){
-  <div>
-    <ol>
-      @for(ingredient of ingredientsList(); track $index){
-        <li>Name: {{ingredient.name}} Quanity: {{ingredient.quanity}} Unit: {{ingredient.unit}}</li>
-      }
-    </ol>
-  </div>
-}

@@ -1,0 +1,27 @@
+
+h1 {
+  margin-left: 25px
+}
+
+mat-toolbar{
+  background-color: var(--mat-sys-primary-container);
+}
+
+mat-icon {
+  margin: 2px;
+}
+
+button {
+  margin-right: 10px;
+  display: flex;
+  line-height: 2;
+  font-weight: 900;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.link {
+  background-color: var(--mat-sys-secondary-container);
+}
