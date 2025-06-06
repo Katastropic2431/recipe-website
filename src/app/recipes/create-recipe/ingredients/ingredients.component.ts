@@ -29,11 +29,5 @@ export class IngredientsComponent {
       quanity: this.enteredQuanity,
       unit: this.enteredUnit,
     });
-    this.recipesService.addIngredient({
-      id: saveId,
-      name: this.enteredIngredients,
-      quanity: this.enteredQuanity,
-      unit:this.enteredUnit,
-    });
   }
 }
