@@ -24,7 +24,7 @@ export class CreateRecipeComponent implements OnInit{
   ingredients: Ingredients[] = [];
   // Using a service to manage recipes
   // This allows us to share state across components  
-  private recipesService = new RecipesService();
+  private recipesService = inject(RecipesService);
 
   ngOnInit(): void {
     this.recipeId = this.route.snapshot.paramMap.get('id');
@@ -41,6 +41,7 @@ export class CreateRecipeComponent implements OnInit{
 
   onAddRecipe(recipe: Recipe){
     this.recipesService.addRecipe(recipe.title, recipe.process);
+    this.ingredients = [];
   }
 
   onRemoveIngredient(id: string){

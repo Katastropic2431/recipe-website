@@ -9,33 +9,58 @@ export class RecipesService {
   private recipes = signal<Array<Recipe>>([]);
   private ingredientList: Ingredients[] = [];
 
+  // allRecipes = (this.recipes.asReadonly());
   allRecipes = this.recipes.asReadonly();
   constructor(){
-    const recipe = localStorage.getItem('recipes');
+    // const recipe = localStorage.getItem('recipes');
+
+    // if (recipe) {
+    //   this.recipes.set(JSON.parse(recipe));
+    // }
+  }
+
+  // Add ingredients to recipe
+  addIngredient(ingredient: Ingredients){
+    console.log('Adding ingredient:', ingredient);
+    this.ingredientList.push(ingredient);
+  }
+
+  loadIngredients(id: string | null){
+    if (!id) {
+      console.log('No recipe ID provided to load ingredients.');
+      return;
+    }
+    this.ingredientList = [];
+    // load ingredients from specific recipe
+    const recipe = this.recipes().find(recipe => recipe.id === id);
     if (recipe) {
-      this.recipes.set(JSON.parse(recipe));
+      this.ingredientList = recipe.ingredients;
+      console.log('Loaded ingredients for recipe:', recipe.title, this.ingredientList);
     }
   }
 
-  addIngredient(ingredient: Ingredients): void {
-    console.log('Adding ingredient:', ingredient);
-    this.ingredientList.push(ingredient);
-    console.log('Current ingredient list:', this.ingredientList);
-  }
-
-  removeIngredient(id: string): void {
+  removeIngredient(id: string){
+    // Remove ingredient from the ingredientList
     console.log('Removing ingredient with id:', id);
-    console.log('ingredients before removal:', this.ingredientList);
-    this.ingredientList = this.ingredientList.filter(ing => ing.id !== id);
+    // Remove ingredient from the ingredientList
+    this.ingredientList = this.ingredientList.filter((ingredient: Ingredients) => ingredient.id !== id);
     console.log('Updated ingredient list:', this.ingredientList);
+    // Also remove the ingredient from all recipes' ingredients arrays
+    this.recipes.update((recipes) =>
+      recipes.map((recipe) => ({
+      ...recipe,
+      ingredients: recipe.ingredients.filter((ingredient: Ingredients) => ingredient.id !== id)
+      }))
+    );
+    console.log('Updated recipes after removing ingredient:', this.recipes());
+    this.saveRecipes();
   }
 
-  getIngredients(): Ingredients[] {
-    return [...this.ingredientList]; // return a copy
+  getIngredients(){
+    return this.ingredientList;
   }
 
   addRecipe(title: string, process: string){
-    console.log(this.ingredientList)
     const newRecipe: Recipe = {
       id: Date.now().toString(),
       title: title,
@@ -43,10 +68,8 @@ export class RecipesService {
       process: process,
       favourites: false
     };
-    console.log('Adding new recipe:', newRecipe);
-    console.log('ingredient list for new recipe:', this.ingredientList);
+
     this.recipes.update((oldRecipe) => [...oldRecipe,newRecipe]);
-    console.log('Updated recipes:', this.recipes());
     this.ingredientList = [];
     this.saveRecipes();
   }
