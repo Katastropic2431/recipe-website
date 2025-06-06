@@ -6,122 +6,137 @@ import { Ingredients } from './create-recipe/ingredients/ingredients.model';
   providedIn: 'root'
 })
 export class RecipesService {
-  private recipes = signal<Recipe[]>([]);
-  private ingredientList = signal<Ingredients[]>([]);
+  private recipes = signal<Array<Recipe>>([]);
+  private ingredientList: Ingredients[] = [];
 
-  readonly allRecipes = this.recipes.asReadonly();
-  readonly ingredients = this.ingredientList.asReadonly();
+  // allRecipes = (this.recipes.asReadonly());
+  allRecipes = this.recipes.asReadonly();
+  constructor(){
+    const recipe = localStorage.getItem('recipes');
 
-  constructor() {
-    const saved = localStorage.getItem('recipes');
-    if (saved) {
-      this.recipes.set(JSON.parse(saved));
+    if (recipe) {
+      this.recipes.set(JSON.parse(recipe));
     }
   }
 
-  /** INGREDIENT METHODS **/
-
-  addIngredient(ingredient: Ingredients): void {
+  // Add ingredients to recipe
+  addIngredient(ingredient: Ingredients){
     console.log('Adding ingredient:', ingredient);
-    this.ingredientList.update((list) => [...list, ingredient]);
+    this.ingredientList.push(ingredient);
   }
 
-  removeIngredient(ingredientId: string): void {
-    console.log('Removing ingredient with id:', ingredientId);
-    this.ingredientList.update((list) =>
-      list.filter((i) => i.id !== ingredientId)
-    );
+  loadIngredients(id: string | null){
+    if (!id) {
+      console.log('No recipe ID provided to load ingredients.');
+      return;
+    }
+    this.ingredientList = [];
+    // load ingredients from specific recipe
+    const recipe = this.recipes().find(recipe => recipe.id === id);
+    if (recipe) {
+      this.ingredientList = recipe.ingredients;
+      console.log('Loaded ingredients for recipe:', recipe.title, this.ingredientList);
+    }
+  }
 
+  removeIngredient(id: string){
+    // Remove ingredient from the ingredientList
+    console.log('Removing ingredient with id:', id);
+    // Remove ingredient from the ingredientList
+    this.ingredientList = this.ingredientList.filter((ingredient: Ingredients) => ingredient.id !== id);
+    console.log('Updated ingredient list:', this.ingredientList);
+    // Also remove the ingredient from all recipes' ingredients arrays
     this.recipes.update((recipes) =>
-      recipes.map((r) => ({
-        ...r,
-        ingredients: r.ingredients.filter((i) => i.id !== ingredientId)
+      recipes.map((recipe) => ({
+      ...recipe,
+      ingredients: recipe.ingredients.filter((ingredient: Ingredients) => ingredient.id !== id)
       }))
     );
-
+    console.log('Updated recipes after removing ingredient:', this.recipes());
     this.saveRecipes();
   }
 
-  loadIngredients(recipeId: string | null): void {
-    if (!recipeId) return;
-    const recipe = this.recipes().find((r) => r.id === recipeId);
-    this.ingredientList.set(recipe?.ingredients || []);
-  }
-
-  clearIngredients(): void {
-    this.ingredientList.set([]);
-  }
-
-  /** RECIPE METHODS **/
-
-  addRecipe(title: string, process: string): void {
+  addRecipe(title: string, process: string){
     const newRecipe: Recipe = {
       id: Date.now().toString(),
-      title,
-      process,
-      ingredients: this.ingredientList(),
+      title: title,
+      ingredients: this.ingredientList,
+      process: process,
       favourites: false
     };
 
-    this.recipes.update((prev) => [...prev, newRecipe]);
-    this.clearIngredients();
+    this.recipes.update((oldRecipe) => [...oldRecipe,newRecipe]);
+    this.ingredientList = [];
     this.saveRecipes();
   }
 
-  updateRecipe(recipeId: string, title: string, process: string): void {
-    this.recipes.update((recipes) =>
-      recipes.map((r) =>
-        r.id === recipeId
-          ? { ...r, title, process, ingredients: this.ingredientList() }
-          : r
-      )
-    );
-
-    this.clearIngredients();
+  // Update recipe
+  updateRecipe(recipeId: string | null, title: string, process: string){
+    if (!recipeId) return;
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, title: title, process: process, ingredients: this.ingredientList};
+      } else {
+        return recipe;
+      }
+    }));
+    this.ingredientList = [];
     this.saveRecipes();
   }
 
-  removeRecipe(recipeId: string): void {
-    this.recipes.update((recipes) =>
-      recipes.filter((r) => r.id !== recipeId)
-    );
+  // Add to favourites
+  toggleFavourite(recipeId: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+      if ( recipe.favourites == true){
+          return {...recipe, favourites: false}
+        } else {
+          return {...recipe, favourites: true}
+        }
+       } else {
+        return recipe;
+       }
+    }));
     this.saveRecipes();
   }
 
-  toggleFavourite(recipeId: string): void {
-    this.recipes.update((recipes) =>
-      recipes.map((r) =>
-        r.id === recipeId
-          ? { ...r, favourites: !r.favourites }
-          : r
-      )
-    );
+  // remove
+  removeRecipe(recipeId: string){
+    this.recipes.update((recipe)=> recipe.filter((recipe)=> recipe.id !== recipeId))
     this.saveRecipes();
   }
 
-  editRecipeTitle(recipeId: string, title: string): void {
-    this.recipes.update((recipes) =>
-      recipes.map((r) =>
-        r.id === recipeId ? { ...r, title } : r
-      )
-    );
+  // edit title
+  editRecipeTitle(recipeId: string, title: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, title: title}
+      } else {
+        return recipe;
+      }
+    }));
     this.saveRecipes();
   }
 
-  editRecipeProcess(recipeId: string, process: string): void {
-    this.recipes.update((recipes) =>
-      recipes.map((r) =>
-        r.id === recipeId ? { ...r, process } : r
-      )
-    );
+  // edit process
+  editRecipeProcess(recipeId: string, process: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, process: process}
+      } else {
+        return recipe;
+      }
+    }));
     this.saveRecipes();
   }
 
-  printAllRecipes(): void {
+  // print all recipes
+  printAllRecipes(){
     console.log('All recipes:', this.recipes());
   }
 
-  private saveRecipes(): void {
-    localStorage.setItem('recipes', JSON.stringify(this.recipes()));
+  // save recipes
+  saveRecipes(){
+    localStorage.setItem('recipes', JSON.stringify(this.recipes()))
   }
 }
