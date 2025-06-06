@@ -31,6 +31,7 @@ export class CreateRecipeComponent implements OnInit{
     this.isEditMode = !!this.recipeId;
     if (this.isEditMode){
       console.log('Edit mode is enabled for recipe ID:', this.recipeId);
+      this.loadRecipe(this.recipeId);
     }
   }
 
@@ -40,6 +41,13 @@ export class CreateRecipeComponent implements OnInit{
   }
 
   onAddRecipe(recipe: Recipe){
+    if (this.isEditMode) {
+      this.recipesService.updateRecipe(this.recipeId, recipe.title, recipe.process);
+      console.log('Recipe updated:', recipe);
+      this.ingredients = [];
+      return;
+    }
+    console.log('Adding new recipe:', recipe);
     this.recipesService.addRecipe(recipe.title, recipe.process);
     this.ingredients = [];
   }
@@ -49,17 +57,15 @@ export class CreateRecipeComponent implements OnInit{
     this.recipesService.removeIngredient(id);
   }
 
-  // loadRecipe(recipeId: string | null) {
-  //     const recipe = this.recipesService.allRecipes().find(r => r.id === recipeId);
-  //     if (recipe) {
-  //       this.ingredients = recipe.ingredients;
-  //       this.loadTitle = recipe?.title || '';
-  //       this.loadProcess = recipe?.process || '';
-  //     }
-  //     console.log('Loaded recipe:', recipe);
-  //     console.log('Loaded title:', this.loadTitle);
-  //     console.log('Loaded process:', this.loadProcess);
-  //     console.log('Loaded ingredients:', this.ingredients);
-  // }
+  loadRecipe(recipeId: string | null) {
+      const recipe = this.recipesService.allRecipes().find(r => r.id === recipeId);
+      if (recipe) {
+        // load ingredients into service
+        this.recipesService.loadIngredients(recipeId);
+        this.ingredients = recipe.ingredients;
+        this.loadTitle = recipe?.title || '';
+        this.loadProcess = recipe?.process || '';
+      }
+  }
 
 }
