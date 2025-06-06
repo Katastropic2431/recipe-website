@@ -9,7 +9,7 @@ import { RecipeItemComponent } from './recipe-item/recipe-item.component';
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css',
 })
-export class RecipeListComponent implements OnInit, OnChanges {
+export class RecipeListComponent implements OnInit {
   private recipesService = inject(RecipesService);
   selectedFilter = signal<string>('show-all');
   showRecipesTemp = this.recipesService.allRecipes;
@@ -18,11 +18,6 @@ export class RecipeListComponent implements OnInit, OnChanges {
     this.recipesService.printAllRecipes();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.showRecipesTemp = this.recipesService.allRecipes;
-  }
-
-  
   onChangeFilterTemp(filter:string){
     console.log(filter);
     if (filter === 'show-favourites'){

@@ -43,6 +43,8 @@ export class RecipeViewComponent implements OnInit {
     this.getRecipeItem = this.recipesService
       .allRecipes()
       .filter((recipe) => this.recipeId === recipe.id)[0];
+    this.getRecipeItem = this.recipesService.allRecipes().find(r => r.id === this.recipeId) || this.getRecipeItem;
+
       console.log('Recipe ID:', this.recipeId);
       console.log('Recipe Item:', this.getRecipeItem);
   }
@@ -65,16 +67,6 @@ export class RecipeViewComponent implements OnInit {
 
   }
 
-  openDialog(){
-    const dialogRef = this.dialog.open(testingDialog, {
-      data: { name: 'Angular' },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-
   openDialogEditProcess(){
      const dialogRef = this.dialog.open(DialogRecipeEditProcess, {
       width: '800px',
@@ -93,12 +85,3 @@ export class RecipeViewComponent implements OnInit {
     });
   }
 }
-
-@Component({
-  selector: 'testing-dialog',
-  templateUrl: 'testing-dialog.html',
-  standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class testingDialog {}

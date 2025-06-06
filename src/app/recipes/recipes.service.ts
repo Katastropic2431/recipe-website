@@ -12,11 +12,11 @@ export class RecipesService {
   // allRecipes = (this.recipes.asReadonly());
   allRecipes = this.recipes.asReadonly();
   constructor(){
-    const recipe = localStorage.getItem('recipes');
+    // const recipe = localStorage.getItem('recipes');
 
-    if (recipe) {
-      this.recipes.set(JSON.parse(recipe));
-    }
+    // if (recipe) {
+    //   this.recipes.set(JSON.parse(recipe));
+    // }
   }
 
   // Add ingredients to recipe
@@ -54,6 +54,10 @@ export class RecipesService {
     );
     console.log('Updated recipes after removing ingredient:', this.recipes());
     this.saveRecipes();
+  }
+
+  getIngredients(){
+    return this.ingredientList;
   }
 
   addRecipe(title: string, process: string){

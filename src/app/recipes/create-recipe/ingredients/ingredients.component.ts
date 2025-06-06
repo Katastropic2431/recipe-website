@@ -1,6 +1,4 @@
-import { RecipeItemComponent } from '../../recipe-list/recipe-item/recipe-item.component';
-import { RecipesService } from '../../recipes.service';
-import { Component, inject, input, output} from '@angular/core';
+import { Component, output} from '@angular/core';
 import { type Ingredients } from './../ingredients/ingredients.model';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +13,6 @@ import { MatSelectModule} from '@angular/material/select';
   styleUrl: './ingredients.component.css'
 })
 export class IngredientsComponent {
-  private recipesService = inject(RecipesService);
   ingredient = output<Ingredients>();
   enteredIngredients = '';
   enteredUnit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram' = 'tablespoon';
@@ -28,12 +25,6 @@ export class IngredientsComponent {
       name: this.enteredIngredients,
       quanity: this.enteredQuanity,
       unit: this.enteredUnit,
-    });
-    this.recipesService.addIngredient({
-      id: saveId,
-      name: this.enteredIngredients,
-      quanity: this.enteredQuanity,
-      unit:this.enteredUnit,
     });
   }
 }

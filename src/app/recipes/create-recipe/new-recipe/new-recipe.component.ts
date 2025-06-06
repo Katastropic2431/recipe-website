@@ -5,6 +5,7 @@ import { RecipesService } from '../../recipes.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule} from '@angular/material/input'
 import { MatSelectModule} from '@angular/material/select';
+import { Recipe } from '../../recipe.model';
 
 @Component({
   selector: 'app-new-recipe',
@@ -20,7 +21,7 @@ export class NewRecipeComponent implements OnInit {
   isEditMode = input<boolean>(false);
   enteredTitle = '';
   enteredProcess = '';
-  addNewRecipe = output<void>();
+  addNewRecipe = output<Recipe>();
 
   private recipesService = inject(RecipesService)
 
@@ -30,14 +31,15 @@ export class NewRecipeComponent implements OnInit {
   }
 
   onSubmit(){
-    if (this.isEditMode()){
-      this.recipesService.updateRecipe(this.recipieId(), this.enteredTitle, this.enteredProcess);
-    } else {
-      this.recipesService.addRecipe(this.enteredTitle, this.enteredProcess);
-    }
+    this.addNewRecipe.emit({
+      id: this.recipieId() || Date.now().toString(),
+      title: this.enteredTitle,
+      ingredients: this.recipesService.getIngredients(),
+      process: this.enteredProcess,
+      favourites: false
+    });
     this.enteredTitle = ''
     this.enteredProcess = ''
-    this.addNewRecipe.emit();
   }
 
 }
