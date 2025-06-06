@@ -1,48 +1,28 @@
-<form  class = "form-shadow-box" (ngSubmit)="onSubmit()" autocomplete="off">
-  <mat-form-field appearance="fill" [style.width.vw]="37">
-    <mat-label for="ingredients">Ingredients</mat-label>
-    <input
-      matInput
-      placeholder="Enter Ingredients"
-      type="text"
-      id="ingredients"
-      name="ingredients"
-      [(ngModel)]="enteredIngredients"
-    />
+<form class="form-shadow-box" (ngSubmit)="onAddIngredient()" autocomplete="off">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Ingredients</mat-label>
+    <input matInput [(ngModel)]="enteredIngredients" name="ingredients" id="ingredients" />
   </mat-form-field>
-  <mat-form-field [style.width.vw]="15" appearance="fill">
-    <mat-label for="quantity">Quantity</mat-label>
-    <input
-      matInput
-      placeholder="Enter Quanity"
-      type="quantity"
-      id="quantity"
-      name="quantity"
-      [(ngModel)]="enteredQuanity"
-    />
-  </mat-form-field>
-  <mat-form-field [style.width.vw]="15" appearance="fill">
-    <mat-label for="unit">Unit</mat-label>
-    <mat-select matInput name="unit" id="unit" [(ngModel)]="enteredUnit">
-      <mat-option value="tablespoon">tablespoon</mat-option>
-      <mat-option value="teaspoon">teaspoon</mat-option>
-      <mat-option value="cup">cup</mat-option>
-      <mat-option value="kilogram">kilogram</mat-option>
-      <mat-option value="gram">gram</mat-option>
-    </mat-select>
-  </mat-form-field>
+
+  <div class="horizontal-group">
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Quantity</mat-label>
+      <input matInput [(ngModel)]="enteredQuanity" name="quantity" id="quantity" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Unit</mat-label>
+      <mat-select [(ngModel)]="enteredUnit" name="unit" id="unit">
+        <mat-option value="tablespoon">Tablespoon</mat-option>
+        <mat-option value="teaspoon">Teaspoon</mat-option>
+        <mat-option value="cup">Cup</mat-option>
+        <mat-option value="kilogram">Kilogram</mat-option>
+        <mat-option value="gram">Gram</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <p id="actions">
     <button type="button" (click)="onAddIngredient()">Add Ingredient</button>
   </p>
 </form>
-
-@if(ingredientsList()?.length!==0){
-  <div>
-    <ol>
-      @for(ingredient of ingredientsList(); track $index){
-        <li>{{ingredient.quanity}} {{ingredient.unit}} of {{ingredient.name}}</li>
-      }
-    </ol>
-  </div>
-}

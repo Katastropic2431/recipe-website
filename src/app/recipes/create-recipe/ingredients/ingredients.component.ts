@@ -15,19 +15,11 @@ import { MatSelectModule} from '@angular/material/select';
   styleUrl: './ingredients.component.css'
 })
 export class IngredientsComponent {
-  ingredientsList = input<Array<Ingredients>>()
   private recipesService = inject(RecipesService);
   ingredient = output<Ingredients>();
-
-  // BLAH
   enteredIngredients = '';
-  enteredProcess = '';
   enteredUnit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram' = 'tablespoon';
   enteredQuanity = '';
-
-  onSubmit(){
-
-  }
 
   onAddIngredient(){
     const saveId = Date.now().toString();

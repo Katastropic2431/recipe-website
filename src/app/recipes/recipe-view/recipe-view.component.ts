@@ -43,6 +43,8 @@ export class RecipeViewComponent implements OnInit {
     this.getRecipeItem = this.recipesService
       .allRecipes()
       .filter((recipe) => this.recipeId === recipe.id)[0];
+      console.log('Recipe ID:', this.recipeId);
+      console.log('Recipe Item:', this.getRecipeItem);
   }
 
 

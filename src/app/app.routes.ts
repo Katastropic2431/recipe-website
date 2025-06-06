@@ -16,7 +16,7 @@ import { CreateRecipeComponent } from './recipes/create-recipe/create-recipe.com
   },
   {
     path: 'recipe-edit-component/:id',
-    component: RecipeEditComponent
+    component: CreateRecipeComponent
   },
   {
     path: 'recipe-create',

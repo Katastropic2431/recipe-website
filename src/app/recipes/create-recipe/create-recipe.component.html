@@ -1,2 +1,40 @@
-<app-new-recipe (addNewRecipe)="onAddRecipeTest()"class="float-child-element" />
-<app-ingredients [ingredientsList]="ingredients" class="float-child-element" />
+<div class="float-parent-element">
+  <app-new-recipe
+    class="float-child-element"
+    [recipeTitle]="loadTitle"
+    [recipeProcess]="loadProcess"
+    [recipieId]="recipeId"
+    [isEditMode]="isEditMode"
+    (addNewRecipe)="onAddRecipe()"
+  ></app-new-recipe>
+  <app-ingredients
+    class="float-child-element"
+    (ingredient)="onAddIngredient($event)"
+  ></app-ingredients>
+</div>
+
+@if(ingredients.length!==0){
+<div class="ingredients-scroll-wrapper">
+  @for(ingredient of ingredients; track $index){
+  <article>
+    <header>
+      <h3>{{ ingredient.name }}</h3>
+    </header>
+
+    <p>
+      {{ ingredient.quanity }} {{ ingredient.unit }} of {{ ingredient.name }}
+    </p>
+    <form>
+      <button
+        type="button"
+        mat-fab
+        extended
+        (click)="onRemoveIngredient(ingredient.id)"
+      >
+        <mat-icon fontIcon="delete"></mat-icon>Delete
+      </button>
+    </form>
+  </article>
+  }
+</div>
+}
