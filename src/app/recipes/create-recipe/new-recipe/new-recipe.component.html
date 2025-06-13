@@ -21,6 +21,10 @@
     ></textarea>
   </mat-form-field>
   <p id="actions">
+  @if (isEditMode()){
+    <button type="submit">Save Recipe</button>
+  } @else {
     <button type="submit">Add Recipe</button>
+  }
   </p>
 </form>

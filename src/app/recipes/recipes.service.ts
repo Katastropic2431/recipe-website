@@ -8,8 +8,6 @@ import { Ingredients } from './create-recipe/ingredients/ingredients.model';
 export class RecipesService {
   private recipes = signal<Array<Recipe>>([]);
   private ingredientList: Ingredients[] = [];
-
-  // allRecipes = (this.recipes.asReadonly());
   allRecipes = this.recipes.asReadonly();
   constructor(){
     const recipe = localStorage.getItem('recipes');
@@ -44,14 +42,6 @@ export class RecipesService {
     console.log('Removing ingredient with id:', id);
     // Remove ingredient from the ingredientList
     this.ingredientList = this.ingredientList.filter((ingredient: Ingredients) => ingredient.id !== id);
-    console.log('Updated ingredient list:', this.ingredientList);
-    // Also remove the ingredient from all recipes' ingredients arrays
-    this.recipes.update((recipes) =>
-      recipes.map((recipe) => ({
-      ...recipe,
-      ingredients: recipe.ingredients.filter((ingredient: Ingredients) => ingredient.id !== id)
-      }))
-    );
     console.log('Updated recipes after removing ingredient:', this.recipes());
     this.saveRecipes();
   }
@@ -104,13 +94,13 @@ export class RecipesService {
     this.saveRecipes();
   }
 
-  // remove
+  // Remove Recipe
   removeRecipe(recipeId: string){
     this.recipes.update((recipe)=> recipe.filter((recipe)=> recipe.id !== recipeId))
     this.saveRecipes();
   }
 
-  // edit title
+  // Edit title
   editRecipeTitle(recipeId: string, title: string){
     this.recipes.update((recipe)=> recipe.map((recipe)=> {
       if (recipe.id === recipeId) {
@@ -122,7 +112,7 @@ export class RecipesService {
     this.saveRecipes();
   }
 
-  // edit process
+  // Edit Process
   editRecipeProcess(recipeId: string, process: string){
     this.recipes.update((recipe)=> recipe.map((recipe)=> {
       if (recipe.id === recipeId) {
@@ -134,12 +124,12 @@ export class RecipesService {
     this.saveRecipes();
   }
 
-  // print all recipes
+  // Print All Recipe
   printAllRecipes(){
     console.log('All recipes:', this.recipes());
   }
 
-  // save recipes
+  // Save Recipes
   saveRecipes(){
     localStorage.setItem('recipes', JSON.stringify(this.recipes()))
   }

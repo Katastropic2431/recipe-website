@@ -23,12 +23,13 @@ export class CreateRecipeComponent implements OnInit{
   isEditMode = false;
   ingredients: Ingredients[] = [];
   // Using a service to manage recipes
-  // This allows us to share state across components  
+  // This allows us to share state across components
   private recipesService = inject(RecipesService);
 
   ngOnInit(): void {
     this.recipeId = this.route.snapshot.paramMap.get('id');
     this.isEditMode = !!this.recipeId;
+    this.ingredients = []
     if (this.isEditMode){
       console.log('Edit mode is enabled for recipe ID:', this.recipeId);
       this.loadRecipe(this.recipeId);
