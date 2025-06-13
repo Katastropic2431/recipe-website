@@ -6,6 +6,11 @@
   background-color: #44433f;
 }
 
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
 h2 {
   margin: 0;
   padding: 0.7rem;
@@ -15,15 +20,13 @@ h2 {
 }
 
 select {
-  margin-left: 29rem;
   font: inherit;
-  padding: 0.5rem;
   border: none;
   background-color: #262521;
   color: #feeaa6;
   border-radius: 0.25rem;
-  font-size: 0.9rem;
-
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
 }
 
 ul {

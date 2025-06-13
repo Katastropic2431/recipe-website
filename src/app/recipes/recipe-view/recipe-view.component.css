@@ -1,27 +1,74 @@
-mat-card{
-  color:black;
-  background-color: grey;
-  max-width: 400px;
-  position: middle;
+.center {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2rem auto;
+  flex-wrap: wrap;
 }
 
-.center {
-  margin: auto;
-  width: 50%;
-  padding: 10px;
+.recipe-card {
+  background-color: #211f1a;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: #efede4;
+}
+
+.section-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.edit-button {
+  font-size: 0.8rem;
+  height: 36px;
+  padding: 0 1rem;
+  margin-top: 0.5rem;
+}
+
+ol {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+  .section-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .edit-button {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
 }
 
 button{
   background-color: #fffc3f;
   color:#7e7c76;
-  width: 10rem;
+  width: 7rem;
   height:2rem;
 }
 
-div {
-  text-align: center;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center;
+mat-form-field {
+  width: 100%;
+}
+
+textarea[matInput] {
+  resize: vertical; /* allows manual resizing by user */
+  min-height: 150px;
+  font-size: 1rem;
 }

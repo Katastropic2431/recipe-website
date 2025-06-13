@@ -1,4 +1,4 @@
-<div>
+<div class="title">
   <h2>My Secret Recipes</h2>
   <!-- Toggle to show favourite vs not favourite  -->
   <select name="filter-item" id="filter-item" (change)="onChangeFilterTemp(filter.value)" #filter>
@@ -6,7 +6,9 @@
     <option value="show-favourites">Show Favourite</option>
     <option value="show-non-favourites">Show Non-Favourite</option>
   </select>
+</div>
 
+<div>
   <ul>
     @for (recipe of showRecipesTemp(); track recipe.id){
       @if (recipe.favourites === true ){

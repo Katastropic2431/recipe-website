@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Recipe } from './recipe.model';
-import { Ingredients } from './ingredients/ingredients.model';
+import { Ingredients } from './create-recipe/ingredients/ingredients.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +8,6 @@ import { Ingredients } from './ingredients/ingredients.model';
 export class RecipesService {
   private recipes = signal<Array<Recipe>>([]);
   private ingredientList: Ingredients[] = [];
-
-  // allRecipes = (this.recipes.asReadonly());
   allRecipes = this.recipes.asReadonly();
   constructor(){
     const recipe = localStorage.getItem('recipes');
@@ -21,12 +19,36 @@ export class RecipesService {
 
   // Add ingredients to recipe
   addIngredient(ingredient: Ingredients){
+    console.log('Adding ingredient:', ingredient);
     this.ingredientList.push(ingredient);
   }
 
-  // getRecipe(recipeId: string){
-  //   this.recipes.update((recipe)=> recipe.filter((recipe)=> recipe.id === recipeId ))
-  // }
+  loadIngredients(id: string | null){
+    if (!id) {
+      console.log('No recipe ID provided to load ingredients.');
+      return;
+    }
+    this.ingredientList = [];
+    // load ingredients from specific recipe
+    const recipe = this.recipes().find(recipe => recipe.id === id);
+    if (recipe) {
+      this.ingredientList = recipe.ingredients;
+      console.log('Loaded ingredients for recipe:', recipe.title, this.ingredientList);
+    }
+  }
+
+  removeIngredient(id: string){
+    // Remove ingredient from the ingredientList
+    console.log('Removing ingredient with id:', id);
+    // Remove ingredient from the ingredientList
+    this.ingredientList = this.ingredientList.filter((ingredient: Ingredients) => ingredient.id !== id);
+    console.log('Updated recipes after removing ingredient:', this.recipes());
+    this.saveRecipes();
+  }
+
+  getIngredients(){
+    return this.ingredientList;
+  }
 
   addRecipe(title: string, process: string){
     const newRecipe: Recipe = {
@@ -38,6 +60,20 @@ export class RecipesService {
     };
 
     this.recipes.update((oldRecipe) => [...oldRecipe,newRecipe]);
+    this.ingredientList = [];
+    this.saveRecipes();
+  }
+
+  // Update recipe
+  updateRecipe(recipeId: string | null, title: string, process: string){
+    if (!recipeId) return;
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, title: title, process: process, ingredients: this.ingredientList};
+      } else {
+        return recipe;
+      }
+    }));
     this.ingredientList = [];
     this.saveRecipes();
   }
@@ -58,15 +94,42 @@ export class RecipesService {
     this.saveRecipes();
   }
 
-  // remove
+  // Remove Recipe
   removeRecipe(recipeId: string){
     this.recipes.update((recipe)=> recipe.filter((recipe)=> recipe.id !== recipeId))
     this.saveRecipes();
   }
 
-  // edit
+  // Edit title
+  editRecipeTitle(recipeId: string, title: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, title: title}
+      } else {
+        return recipe;
+      }
+    }));
+    this.saveRecipes();
+  }
 
-  // save recipes
+  // Edit Process
+  editRecipeProcess(recipeId: string, process: string){
+    this.recipes.update((recipe)=> recipe.map((recipe)=> {
+      if (recipe.id === recipeId) {
+        return {...recipe, process: process}
+      } else {
+        return recipe;
+      }
+    }));
+    this.saveRecipes();
+  }
+
+  // Print All Recipe
+  printAllRecipes(){
+    console.log('All recipes:', this.recipes());
+  }
+
+  // Save Recipes
   saveRecipes(){
     localStorage.setItem('recipes', JSON.stringify(this.recipes()))
   }
