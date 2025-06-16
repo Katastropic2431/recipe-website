@@ -6,6 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DialogRecipeEditTitle } from './dialog-recipe-edit-title';
 import { DialogRecipeEditProcess } from './dialog-recipe-edit-process';
+import {MatListModule} from '@angular/material/list';
+import { MatStepperModule } from '@angular/material/stepper';
+import { NgFor, NgIf } from '@angular/common';
 import {
   MatDialog,
   MatDialogModule,
@@ -15,10 +18,11 @@ import {
   MatDialogTitle,
   MatDialogConfig,
 } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-recipe-view',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, MatIconModule, RouterLink],
+  imports: [MatCardModule, NgIf, NgFor, MatStepperModule, MatListModule,MatButtonModule, MatIconModule, RouterLink],
   templateUrl: './recipe-view.component.html',
   styleUrl: './recipe-view.component.css',
 })
@@ -83,5 +87,16 @@ export class RecipeViewComponent implements OnInit {
         console.log('Dialog was closed without changes');
       }
     });
+  }
+
+  public get processSteps(): string[] {
+    console.log('Process Steps:', this.getRecipeItem.process
+      .split('\n')
+      .map(s => s.replace(/^\d+\.\s*/, ''))
+      .filter(Boolean));
+    return this.getRecipeItem.process
+      .split('\n')
+      .map(s => s.replace(/^\d+\.\s*/, ''))
+      .filter(Boolean);                       
   }
 }
