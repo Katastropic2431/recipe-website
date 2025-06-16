@@ -49,7 +49,7 @@ export class CreateRecipeComponent implements OnInit{
       return;
     }
     console.log('Adding new recipe:', recipe);
-    this.recipesService.addRecipe(recipe.title, recipe.process);
+    this.recipesService.addRecipeAPI(recipe.title, recipe.process);
     this.ingredients = [];
   }
 

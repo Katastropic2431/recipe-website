@@ -8,11 +8,10 @@ import { catchError, map, tap, throwError } from 'rxjs';
 })
 export class RecipesService {
   private readonly httpClient = inject(HttpClient);
+  private destoryRef = inject(DestroyRef);
   private readonly apiUrl = 'http://localhost:8000';
-
   private recipes = signal<Array<Recipe>>([]);
   private ingredientList: Ingredients[] = [];
-  private destoryRef = inject(DestroyRef);
   allRecipes = this.recipes.asReadonly();
   constructor(){
     this.fetchRecipe();
@@ -73,6 +72,31 @@ export class RecipesService {
     this.recipes.update((oldRecipe) => [...oldRecipe,newRecipe]);
     this.ingredientList = [];
     this.saveRecipes();
+  }
+
+  addRecipeAPI(title: string, process: string) {
+    const newRecipe: Recipe = {
+      id: Date.now().toString(),
+      title: title,
+      ingredients: this.ingredientList,
+      process: process,
+      favourites: false
+    };
+    const prevRecipe = this.recipes();
+
+
+    if (!prevRecipe.some((p) => p.id === newRecipe.id)) {
+      this.recipes.set([...prevRecipe, newRecipe]);
+    }
+
+    return this.httpClient
+      .put('http://localhost:3000/recipe', newRecipe)
+      .pipe(
+        catchError(() => {
+          this.recipes.set(prevRecipe);
+          return throwError(() => new Error('Failed to store selected place'));
+        })
+      );
   }
 
   // Update recipe
