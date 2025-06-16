@@ -1,20 +1,31 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { Recipe } from './recipe.model';
 import { Ingredients } from './create-recipe/ingredients/ingredients.model';
-
+import { HttpClient } from '@angular/common/http';
+import { catchError, map, tap, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class RecipesService {
+  private readonly httpClient = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8000';
+
   private recipes = signal<Array<Recipe>>([]);
   private ingredientList: Ingredients[] = [];
+  private destoryRef = inject(DestroyRef);
   allRecipes = this.recipes.asReadonly();
   constructor(){
-    const recipe = localStorage.getItem('recipes');
+    this.fetchRecipe();
+  }
 
-    if (recipe) {
-      this.recipes.set(JSON.parse(recipe));
-    }
+  private fetchRecipe() {
+    const subscription = this.httpClient.get<Recipe[]>(`${this.apiUrl}/recipes`).subscribe({
+      next: (resData) => {
+        console.log(resData);
+        this.recipes.set(resData);
+        console.log('Recipes fetched successfully:', this.recipes());
+      }
+    })
   }
 
   // Add ingredients to recipe
