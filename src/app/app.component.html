@@ -1,3 +1,11 @@
-<h1>Welcome to my Website</h1>
+<mat-toolbar>
+  <button matMiniFab class="example-icon" aria-label="Example icon-button with menu icon" [routerLink]="'/'">
+    <mat-icon>home</mat-icon>
+  </button>
+  <span>My Recipe App</span>
+  <span class="spacer"></span>
+  <button class="link"mat-fab extended [routerLink]="'/recipe-create'">
+    <mat-icon>create</mat-icon>Create Recipe
+  </button>
+</mat-toolbar>
 <router-outlet></router-outlet>
-<!-- <app-recipes></app-recipes> -->
