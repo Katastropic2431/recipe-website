@@ -31,15 +31,6 @@ export class NewRecipeComponent implements OnInit {
   }
 
   onSubmit(){
-    this.addNewRecipe.emit({
-      id: this.recipieId() || Date.now().toString(),
-      title: this.enteredTitle,
-      ingredients: this.recipesService.getIngredients(),
-      process: this.enteredProcess,
-      favourites: false
-    });
-    this.enteredTitle = ''
-    this.enteredProcess = ''
   }
 
 }

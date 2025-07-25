@@ -20,10 +20,9 @@ export class RecipeItemComponent {
   private recipesService = inject(RecipesService)
 
   onRemoveRecipe(recipeId: string){
-    this.recipesService.removeRecipe(recipeId)
   }
 
-  onToggleFavourite(recipeId: string){
-    this.recipesService.toggleFavourite(recipeId)
+  onToggleFavourite(recipeId: string) {
+    const sub = this.recipesService.toggleFavourite(recipeId).subscribe();
   }
 }

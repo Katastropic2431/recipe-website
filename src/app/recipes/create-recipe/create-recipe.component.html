@@ -5,11 +5,9 @@
     [recipeProcess]="loadProcess"
     [recipieId]="recipeId"
     [isEditMode]="isEditMode"
-    (addNewRecipe)="onAddRecipe($event)"
   ></app-new-recipe>
   <app-ingredients
     class="float-child-element"
-    (ingredient)="onAddIngredient($event)"
   ></app-ingredients>
 </div>
 
@@ -29,7 +27,6 @@
         type="button"
         mat-fab
         extended
-        (click)="onRemoveIngredient(ingredient.id)"
       >
         <mat-icon fontIcon="delete"></mat-icon>Delete
       </button>
