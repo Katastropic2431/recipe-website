@@ -1,6 +1,6 @@
-import { inject, Injectable, signal, DestroyRef } from '@angular/core';
-import { Recipe } from './recipe.model';
-import { Ingredients } from './create-recipe/ingredients/ingredients.model';
+import { inject, Injectable, signal, DestroyRef, Signal } from '@angular/core';
+import { Recipe, createRecipeRequest } from './recipe.model';
+import { Ingredients } from './ingredients.model';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, tap, throwError } from 'rxjs';
 @Injectable({
@@ -11,6 +11,9 @@ export class RecipesService {
   private readonly apiUrl = 'http://localhost:8000/api';
   private recipes = signal<Array<Recipe>>([]);
   allRecipes = this.recipes.asReadonly();
+  private ingredientList = signal<Ingredients[]>([]);
+  allIngredients = this.ingredientList.asReadonly();
+
   constructor(){
     this.fetchRecipe('Failed to fetch recipes');
   }
@@ -49,15 +52,70 @@ export class RecipesService {
     );
   }
 
-  updateRecipe(recipeId: string, title: string, process: string) {
-    return this.httpClient
-      .put(`${this.apiUrl}/recipes/${recipeId}`, { title, process })
+  // api to create recipe with ingredients
+  createRecipe(title: string, process: string, ingredients: Ingredients[]) {
+    const recipePayload = {
+      title: title,
+      process: process,
+      favourites: false,
+      ingredients: ingredients
+    };
+
+    return this.httpClient.post<Recipe>(`${this.apiUrl}/recipes`, recipePayload)
+      .pipe(
+        catchError((error) => {
+          console.error('Failed to create recipe:', error);
+          return throwError(() => new Error('Failed to create recipe'));
+        })
+      );
+  }
+
+  // api to update recipe with ingredients
+  updateRecipe(recipeId: string, title: string, process: string, ingredients: Ingredients[]) {
+    const recipePayload = {
+      title: title,
+      process: process,
+      favourites: false,
+      ingredients: ingredients
+    };
+
+    return this.httpClient.put<Recipe>(`${this.apiUrl}/recipes/${recipeId}`, recipePayload)
       .pipe(
         catchError((error) => {
           console.error('Failed to update recipe:', error);
           return throwError(() => new Error('Failed to update recipe'));
         })
       );
+  }
+  // api call to load ingredients by recipe id
+  loadIngredientsByRecipeId(recipeId: string) {
+    // Check if string is ''
+    if (recipeId==='') {
+      console.warn('Recipe ID is empty, returning empty ingredient list');
+      return this.ingredientList;
+    }
+    return this.httpClient.get<Ingredients[]>(`${this.apiUrl}/ingredients/by-recipe/${recipeId}`).pipe(
+      tap((ingredients) => {
+        this.ingredientList.set(ingredients);
+      }),
+      catchError((error) => {
+        console.error('Failed to load ingredients:', error);
+        return throwError(() => new Error('Failed to load ingredients'));
+      })
+    );
+  }
+
+  addIngredient(ingredient: Ingredients){
+    console.log('Adding ingredient:', ingredient);
+    this.ingredientList.update((currentIngredients) => [...currentIngredients, ingredient]);
+  }
+
+  removeIngredient(id: string){
+    // Remove ingredient from the ingredientList
+    console.log('Removing ingredient with id:', id);
+    // Remove ingredient from the ingredientList
+    this.ingredientList.update((currentIngredients) => currentIngredients.filter((ingredient: Ingredients) => ingredient.id !== id));
+    console.log('Updated recipes after removing ingredient:', this.recipes());
   }
   
   private fetchRecipe(errorMessage: string) {
@@ -72,4 +130,5 @@ export class RecipesService {
       }
     })
   }
+
 }

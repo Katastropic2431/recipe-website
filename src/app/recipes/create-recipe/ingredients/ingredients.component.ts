@@ -1,5 +1,5 @@
 import { Component, output} from '@angular/core';
-import { type Ingredients } from './../ingredients/ingredients.model';
+import { type Ingredients, CreateIngredientsRequest } from '../../ingredients.model';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule} from '@angular/material/input'
@@ -17,6 +17,7 @@ export class IngredientsComponent {
   enteredIngredients = '';
   enteredUnit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram' = 'tablespoon';
   enteredQuanity = '';
+
 
   onAddIngredient(){
     const saveId = Date.now().toString();

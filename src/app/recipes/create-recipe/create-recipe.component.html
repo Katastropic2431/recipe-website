@@ -3,11 +3,12 @@
     class="float-child-element"
     [recipeTitle]="loadTitle"
     [recipeProcess]="loadProcess"
-    [recipieId]="recipeId"
+    [recipeId]="recipeId"
     [isEditMode]="isEditMode"
   ></app-new-recipe>
   <app-ingredients
     class="float-child-element"
+    (ingredient)="onAddIngredient($event)"
   ></app-ingredients>
 </div>
 
@@ -27,6 +28,7 @@
         type="button"
         mat-fab
         extended
+        onclick="onRemoveIngredient(ingredient.id)"
       >
         <mat-icon fontIcon="delete"></mat-icon>Delete
       </button>

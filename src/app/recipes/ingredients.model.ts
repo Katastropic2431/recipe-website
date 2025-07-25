@@ -4,3 +4,9 @@ export interface Ingredients {
   quanity: string;
   unit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram';
 }
+
+export interface CreateIngredientsRequest {
+  name: string;
+  quanity: string;
+  unit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram';
+}

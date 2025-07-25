@@ -1,5 +1,5 @@
-import { type Ingredients } from './../ingredients/ingredients.model';
-import { Component, inject, output, input, OnInit } from '@angular/core';
+import { type Ingredients } from '../../ingredients.model';
+import { Component, inject, output, input, OnInit, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RecipesService } from '../../recipes.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,20 +17,53 @@ import { Recipe } from '../../recipe.model';
 export class NewRecipeComponent implements OnInit {
   recipeTitle = input<string>('');
   recipeProcess = input<string>('');
-  recipieId = input<string|null>('');
+  recipeId = input<string>('');
   isEditMode = input<boolean>(false);
   enteredTitle = '';
   enteredProcess = '';
+  enteredId = '';
   addNewRecipe = output<Recipe>();
 
   private recipesService = inject(RecipesService)
 
+  constructor() {
+    effect(() => {
+      this.enteredTitle = this.recipeTitle();
+      this.enteredProcess = this.recipeProcess();
+      this.enteredId = this.recipeId();
+      console.log('Entered Title:', this.enteredTitle);
+      console.log('Entered Process:', this.enteredProcess);
+      console.log('Entered ID:', this.enteredId);
+    });
+  }
+
+  ingredients = input<Ingredients[]>([]);
   ngOnInit() {
     this.enteredTitle = this.recipeTitle();
     this.enteredProcess = this.recipeProcess();
+    console.log(this.recipeTitle());
+    console.log(this.recipeProcess());
+    
   }
 
-  onSubmit(){
+  onSubmit() {
+    if (this.isEditMode()) {
+      if (this.enteredId === '') {
+        console.error('Recipe ID is required for updating');
+        return;
+      }
+      this.recipesService.updateRecipe(this.enteredId, this.enteredTitle, this.enteredProcess, this.ingredients())
+        .subscribe({
+          next: (updatedRecipe) => console.log('Recipe updated:', updatedRecipe),
+          error: (err) => console.error(err)
+        });
+    } else {
+      this.recipesService.createRecipe(this.enteredTitle, this.enteredProcess, this.ingredients())
+        .subscribe({
+          next: (newRecipe) => console.log('Recipe created:', newRecipe),
+          error: (err) => console.error(err)
+        });
+    }
   }
 
 }
