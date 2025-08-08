@@ -1,12 +1,12 @@
 export interface Ingredients {
   id: string;
   name: string;
-  quanity: string;
+  quantity: number;
   unit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram';
 }
 
 export interface CreateIngredientsRequest {
   name: string;
-  quanity: string;
+  quantity: number;
   unit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram';
 }

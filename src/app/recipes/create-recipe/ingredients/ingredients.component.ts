@@ -16,7 +16,7 @@ export class IngredientsComponent {
   ingredient = output<Ingredients>();
   enteredIngredients = '';
   enteredUnit: 'tablespoon' | 'teaspoon' | 'cup' | 'kilogram' | 'gram' = 'tablespoon';
-  enteredQuanity = '';
+  enteredquantity = '';
 
 
   onAddIngredient(){
@@ -24,7 +24,7 @@ export class IngredientsComponent {
     this.ingredient.emit({
       id: saveId,
       name: this.enteredIngredients,
-      quanity: this.enteredQuanity,
+      quantity: this.enteredquantity ? parseFloat(this.enteredquantity) : 0,
       unit: this.enteredUnit,
     });
   }

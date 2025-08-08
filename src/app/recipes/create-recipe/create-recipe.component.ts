@@ -34,7 +34,7 @@ export class CreateRecipeComponent implements OnInit{
       this.recipeId = params['id'];
     });
   }
-  // not implemented yet
+
   onRemoveIngredient(id: string){
     this.ingredients = this.ingredients.filter(ing => ing.id !== id);
     this.recipesService.removeIngredient(id);
@@ -53,10 +53,7 @@ export class CreateRecipeComponent implements OnInit{
         this.recipe = data;
         this.loadTitle = this.recipe.title
         this.loadProcess = this.recipe.process
-        this.ingredients = this.recipe.ingredients
-        console.log('loadTitle:', this.loadTitle);
-        console.log('loadProcess:', this.loadProcess);
-        console.log('ingredients:', this.ingredients);
+        this.ingredients = this.recipe.ingredients;
       },
       error: (err) => console.error(err),
     });
@@ -64,10 +61,14 @@ export class CreateRecipeComponent implements OnInit{
 
   ngOnInit(): void {
     this.isEditMode = !!this.recipeId;
+
     if (this.isEditMode){
       console.log('Edit mode is enabled for recipe ID:', this.recipeId);
+      this.fetchRecipe();
+    } else {
+      this.ingredients = [];
+      this.recipesService.clearIngredients();
     }
-    this.fetchRecipe();
   }
 
 }

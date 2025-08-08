@@ -21,14 +21,14 @@
     </header>
 
     <p>
-      {{ ingredient.quanity }} {{ ingredient.unit }} of {{ ingredient.name }}
+      {{ ingredient.quantity }} {{ ingredient.unit }} of {{ ingredient.name }}
     </p>
     <form>
       <button
         type="button"
         mat-fab
         extended
-        onclick="onRemoveIngredient(ingredient.id)"
+        (click)="onRemoveIngredient(ingredient.id)"
       >
         <mat-icon fontIcon="delete"></mat-icon>Delete
       </button>

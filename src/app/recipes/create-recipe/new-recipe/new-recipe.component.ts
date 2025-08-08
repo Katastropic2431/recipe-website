@@ -43,7 +43,6 @@ export class NewRecipeComponent implements OnInit {
     this.enteredProcess = this.recipeProcess();
     console.log(this.recipeTitle());
     console.log(this.recipeProcess());
-    
   }
 
   onSubmit() {
@@ -52,13 +51,13 @@ export class NewRecipeComponent implements OnInit {
         console.error('Recipe ID is required for updating');
         return;
       }
-      this.recipesService.updateRecipe(this.enteredId, this.enteredTitle, this.enteredProcess, this.ingredients())
+      this.recipesService.updateRecipe(this.enteredId, this.enteredTitle, this.enteredProcess)
         .subscribe({
           next: (updatedRecipe) => console.log('Recipe updated:', updatedRecipe),
           error: (err) => console.error(err)
         });
     } else {
-      this.recipesService.createRecipe(this.enteredTitle, this.enteredProcess, this.ingredients())
+      this.recipesService.createRecipe(this.enteredTitle, this.enteredProcess)
         .subscribe({
           next: (newRecipe) => console.log('Recipe created:', newRecipe),
           error: (err) => console.error(err)
