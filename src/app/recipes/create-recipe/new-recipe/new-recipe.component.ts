@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule} from '@angular/material/input'
 import { MatSelectModule} from '@angular/material/select';
 import { Recipe } from '../../recipe.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-recipe',
@@ -21,6 +22,7 @@ export class NewRecipeComponent implements OnInit {
   isEditMode = input<boolean>(false);
   enteredTitle = '';
   enteredProcess = '';
+  router = inject(Router);
   enteredId = '';
   addNewRecipe = output<Recipe>();
 
@@ -63,6 +65,7 @@ export class NewRecipeComponent implements OnInit {
           error: (err) => console.error(err)
         });
     }
+    this.router.navigate(['/']);
   }
 
 }
