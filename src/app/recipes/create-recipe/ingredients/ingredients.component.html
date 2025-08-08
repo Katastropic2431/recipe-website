@@ -1,0 +1,28 @@
+<form class="form-shadow-box" (ngSubmit)="onAddIngredient()" autocomplete="off">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Ingredients</mat-label>
+    <input matInput [(ngModel)]="enteredIngredients" name="ingredients" id="ingredients" />
+  </mat-form-field>
+
+  <div class="horizontal-group">
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Quantity</mat-label>
+      <input matInput [(ngModel)]="enteredquantity" type="number" name="quantity" id="quantity" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="half-width">
+      <mat-label>Unit</mat-label>
+      <mat-select [(ngModel)]="enteredUnit" name="unit" id="unit">
+        <mat-option value="tablespoon">Tablespoon</mat-option>
+        <mat-option value="teaspoon">Teaspoon</mat-option>
+        <mat-option value="cup">Cup</mat-option>
+        <mat-option value="kilogram">Kilogram</mat-option>
+        <mat-option value="gram">Gram</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <p id="actions">
+    <button type="submit">Add Ingredient</button>
+  </p>
+</form>

@@ -1,5 +1,5 @@
 import { RecipesService } from '../recipes.service';
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { RecipeItemComponent } from './recipe-item/recipe-item.component';
 
 @Component({
@@ -9,25 +9,13 @@ import { RecipeItemComponent } from './recipe-item/recipe-item.component';
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css',
 })
-export class RecipeListComponent {
+export class RecipeListComponent implements OnInit {
   private recipesService = inject(RecipesService);
   selectedFilter = signal<string>('show-all');
-  // showRecipes = computed(()=>{
-  //   switch(this.selectedFilter()){
-  //     case 'show-favourites':
-  //       return this.recipesService.allRecipes().filter((recipe) => recipe.favourites === true);
-  //     case 'show-non-favourites':
-  //       return this.recipesService.allRecipes().filter((recipes) => recipes.favourites === false);
-  //     default:
-  //       return this.recipesService.allRecipes();
-  //   }
-  // });
-
-  // onChangeFilter(filter: string) {
-  //   this.selectedFilter.set(filter);
-  // }
-
   showRecipesTemp = this.recipesService.allRecipes;
+
+  ngOnInit(): void {
+  }
 
   onChangeFilterTemp(filter:string){
     console.log(filter);
