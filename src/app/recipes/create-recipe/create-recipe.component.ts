@@ -1,5 +1,5 @@
 import { Component, OnChanges, OnInit, SimpleChanges, inject, input} from '@angular/core';
-import { Ingredients } from './ingredients/ingredients.model';
+import { Ingredients, CreateIngredientsRequest} from '../ingredients.model';
 import { IngredientsComponent } from './ingredients/ingredients.component';
 import { NewRecipeComponent } from './new-recipe/new-recipe.component';
 import { ActivatedRoute } from '@angular/router';
@@ -17,40 +17,22 @@ import { Recipe } from '../recipe.model';
 })
 export class CreateRecipeComponent implements OnInit{
   route = inject(ActivatedRoute);
-  recipeId: string | null = '';
+  recipeId: string = '';
   loadTitle = ""
   loadProcess = ""
   isEditMode = false;
   ingredients: Ingredients[] = [];
-  // Using a service to manage recipes
-  // This allows us to share state across components
+  recipe: Recipe | null = null; // Will hold the recipe fetched from the backend
+
+
   private recipesService = inject(RecipesService);
 
-  ngOnInit(): void {
-    this.recipeId = this.route.snapshot.paramMap.get('id');
-    this.isEditMode = !!this.recipeId;
-    this.ingredients = []
-    if (this.isEditMode){
-      console.log('Edit mode is enabled for recipe ID:', this.recipeId);
-      this.loadRecipe(this.recipeId);
-    }
-  }
 
-  onAddIngredient(ingredient: Ingredients){
-    this.ingredients.push(ingredient);
-    this.recipesService.addIngredient(ingredient);
-  }
-
-  onAddRecipe(recipe: Recipe){
-    if (this.isEditMode) {
-      this.recipesService.updateRecipe(this.recipeId, recipe.title, recipe.process);
-      console.log('Recipe updated:', recipe);
-      this.ingredients = [];
-      return;
-    }
-    console.log('Adding new recipe:', recipe);
-    this.recipesService.addRecipe(recipe.title, recipe.process);
-    this.ingredients = [];
+  constructor() {
+    // Get recipeId from route params
+    this.route.params.subscribe((params) => {
+      this.recipeId = params['id'];
+    });
   }
 
   onRemoveIngredient(id: string){
@@ -58,15 +40,35 @@ export class CreateRecipeComponent implements OnInit{
     this.recipesService.removeIngredient(id);
   }
 
-  loadRecipe(recipeId: string | null) {
-      const recipe = this.recipesService.allRecipes().find(r => r.id === recipeId);
-      if (recipe) {
-        // load ingredients into service
-        this.recipesService.loadIngredients(recipeId);
-        this.ingredients = recipe.ingredients;
-        this.loadTitle = recipe?.title || '';
-        this.loadProcess = recipe?.process || '';
-      }
+  // not implemented yet
+  onAddIngredient(ingredient: Ingredients){
+    this.ingredients.push(ingredient);
+    this.recipesService.addIngredient(ingredient);
+  }
+  
+  // Fetch recipe by ID from backend
+  fetchRecipe() {
+    this.recipesService.getRecipeById(this.recipeId).subscribe({
+      next: (data) => {
+        this.recipe = data;
+        this.loadTitle = this.recipe.title
+        this.loadProcess = this.recipe.process
+        this.ingredients = this.recipe.ingredients;
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  ngOnInit(): void {
+    this.isEditMode = !!this.recipeId;
+
+    if (this.isEditMode){
+      console.log('Edit mode is enabled for recipe ID:', this.recipeId);
+      this.fetchRecipe();
+    } else {
+      this.ingredients = [];
+      this.recipesService.clearIngredients();
+    }
   }
 
 }

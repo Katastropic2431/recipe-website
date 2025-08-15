@@ -20,10 +20,14 @@ export class RecipeItemComponent {
   private recipesService = inject(RecipesService)
 
   onRemoveRecipe(recipeId: string){
-    this.recipesService.removeRecipe(recipeId)
+    console.log('Removing recipe with ID:', recipeId);
+    this.recipesService.deleteRecipe(recipeId).subscribe({
+      next: () => console.log('Recipe deleted successfully'),
+      error: (err) => console.error('Error deleting recipe:', err)
+    });
   }
 
-  onToggleFavourite(recipeId: string){
-    this.recipesService.toggleFavourite(recipeId)
+  onToggleFavourite(recipeId: string) {
+    const sub = this.recipesService.toggleFavourite(recipeId).subscribe();
   }
 }

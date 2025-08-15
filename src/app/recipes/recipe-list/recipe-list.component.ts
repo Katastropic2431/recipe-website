@@ -15,7 +15,6 @@ export class RecipeListComponent implements OnInit {
   showRecipesTemp = this.recipesService.allRecipes;
 
   ngOnInit(): void {
-    this.recipesService.printAllRecipes();
   }
 
   onChangeFilterTemp(filter:string){

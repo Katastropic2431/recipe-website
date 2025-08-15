@@ -56,11 +56,11 @@ p {
   }
 }
 
-button{
+button {
   background-color: #fffc3f;
-  color:#7e7c76;
+  color: #7e7c76;
   width: 7rem;
-  height:2rem;
+  height: 2rem;
 }
 
 mat-form-field {
@@ -71,4 +71,9 @@ textarea[matInput] {
   resize: vertical; /* allows manual resizing by user */
   min-height: 150px;
   font-size: 1rem;
+}
+
+.my-stepper-card {
+  margin: 20px;
+  padding: 20px;
 }

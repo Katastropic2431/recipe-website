@@ -1,4 +1,4 @@
-import { Ingredients } from './create-recipe/ingredients/ingredients.model';
+import { Ingredients } from './ingredients.model';
 import { Component, input } from '@angular/core';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 
