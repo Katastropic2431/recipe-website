@@ -1,4 +1,4 @@
-import { Ingredients } from "./create-recipe/ingredients/ingredients.model";
+import { Ingredients } from "./ingredients.model";
 
 export interface Recipe{
   id: string,
@@ -6,4 +6,11 @@ export interface Recipe{
   title: string,
   ingredients: Ingredients[],
   process: string,
+}
+
+export interface createRecipeRequest {
+  title: string,
+  process: string,
+  ingredients: Ingredients[],
+  favourites?: boolean,
 }

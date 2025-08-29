@@ -1,136 +1,173 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { Recipe } from './recipe.model';
-import { Ingredients } from './create-recipe/ingredients/ingredients.model';
-
+import { inject, Injectable, signal, DestroyRef, Signal } from '@angular/core';
+import { Recipe, createRecipeRequest } from './recipe.model';
+import { Ingredients } from './ingredients.model';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map, tap, throwError } from 'rxjs';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RecipesService {
+  private readonly httpClient = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8000/api';
   private recipes = signal<Array<Recipe>>([]);
-  private ingredientList: Ingredients[] = [];
   allRecipes = this.recipes.asReadonly();
-  constructor(){
-    const recipe = localStorage.getItem('recipes');
+  private ingredientList = signal<Ingredients[]>([]);
+  allIngredients = this.ingredientList.asReadonly();
 
-    if (recipe) {
-      this.recipes.set(JSON.parse(recipe));
-    }
+  constructor() {
+    this.fetchRecipe('Failed to fetch recipes');
   }
 
-  // Add ingredients to recipe
-  addIngredient(ingredient: Ingredients){
+  // api to get recipe by id
+  getRecipeById(recipeId: string) {
+    
+    return this.httpClient
+      .get<Recipe>(`${this.apiUrl}/recipes/${recipeId}`)
+      .pipe(
+        tap((recipe) => {
+          this.ingredientList.set(recipe.ingredients);
+        }),
+        catchError((error) => {
+          console.error('Failed to fetch recipe:', error);
+          return throwError(() => new Error('Failed to fetch recipe'));
+        })
+      );
+  }
+
+  // api to toggle favourite status of a recipe
+  toggleFavourite(recipeId: string) {
+    const currentRecipes = [...this.recipes()];
+    const recipe = currentRecipes.find((r) => r.id === recipeId);
+
+    if (!recipe) return throwError(() => new Error('Recipe not found'));
+
+    const updatedRecipe = { ...recipe, favourites: !recipe.favourites };
+    this.recipes.update((recipes) =>
+      recipes.map((r) => (r.id === recipeId ? updatedRecipe : r))
+    );
+
+    return this.httpClient
+      .put(`${this.apiUrl}/recipes`, null, {
+        params: { id: recipeId },
+      })
+      .pipe(
+        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        catchError((error) => {
+          console.error('Failed to toggle favourite:', error);
+          // Revert local state if API fails
+          this.recipes.set(currentRecipes);
+          return throwError(() => new Error('Failed to toggle favourite'));
+        })
+      );
+  }
+
+  // api to create recipe with ingredients
+  createRecipe(title: string, process: string) {
+    const recipePayload = {
+      title: title,
+      process: process,
+      favourites: false,
+      ingredients: this.ingredientList(),
+    };
+
+    console.log(
+      'Submitting recipePayload:',
+      JSON.stringify(recipePayload, null, 2)
+    );
+
+    return this.httpClient
+      .post<Recipe>(
+        `${this.apiUrl}/recipes/recipe-with-ingredient`,
+        recipePayload
+      )
+      .pipe(
+        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.clearIngredients()),
+        catchError((error) => {
+          console.error('Failed to create recipe:', error);
+          return throwError(() => new Error('Failed to create recipe'));
+        })
+      );
+  }
+
+  // api to update recipe with ingredients
+  updateRecipe(recipeId: string, title: string, process: string) {
+    const recipePayload = {
+      title: title,
+      process: process,
+      favourites: false,
+      ingredients: this.ingredientList(),
+    };
+
+    console.log(
+      'Submitting recipePayload:',
+      JSON.stringify(recipePayload, null, 2)
+    );
+
+    return this.httpClient
+      .put<Recipe>(`${this.apiUrl}/recipes/${recipeId}`, recipePayload)
+      .pipe(
+        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.clearIngredients()),
+        catchError((error) => {
+          console.error('Failed to update recipe:', error);
+          return throwError(() => new Error('Failed to update recipe'));
+        })
+      );
+  }
+
+  addIngredient(ingredient: Ingredients) {
     console.log('Adding ingredient:', ingredient);
-    this.ingredientList.push(ingredient);
+    this.ingredientList.update((currentIngredients) => [
+      ...currentIngredients,
+      ingredient,
+    ]);
+    console.log('Updated ingredient list:', this.ingredientList());
   }
 
-  loadIngredients(id: string | null){
-    if (!id) {
-      console.log('No recipe ID provided to load ingredients.');
-      return;
-    }
-    this.ingredientList = [];
-    // load ingredients from specific recipe
-    const recipe = this.recipes().find(recipe => recipe.id === id);
-    if (recipe) {
-      this.ingredientList = recipe.ingredients;
-      console.log('Loaded ingredients for recipe:', recipe.title, this.ingredientList);
-    }
-  }
-
-  removeIngredient(id: string){
+  removeIngredient(id: string) {
     // Remove ingredient from the ingredientList
     console.log('Removing ingredient with id:', id);
     // Remove ingredient from the ingredientList
-    this.ingredientList = this.ingredientList.filter((ingredient: Ingredients) => ingredient.id !== id);
-    console.log('Updated recipes after removing ingredient:', this.recipes());
-    this.saveRecipes();
+    this.ingredientList.update((currentIngredients) =>
+      currentIngredients.filter(
+        (ingredient: Ingredients) => ingredient.id !== id
+      )
+    );
   }
 
-  getIngredients(){
-    return this.ingredientList;
+  clearIngredients() {
+    console.log('Clearing all ingredients');
+    this.ingredientList.set([]);
   }
 
-  addRecipe(title: string, process: string){
-    const newRecipe: Recipe = {
-      id: Date.now().toString(),
-      title: title,
-      ingredients: this.ingredientList,
-      process: process,
-      favourites: false
-    };
-
-    this.recipes.update((oldRecipe) => [...oldRecipe,newRecipe]);
-    this.ingredientList = [];
-    this.saveRecipes();
+  deleteRecipe(recipeId: string) {
+    console.log('Deleting recipe with ID:', recipeId);
+    return this.httpClient
+      .delete(`${this.apiUrl}/recipes/${recipeId}`)
+      .pipe(
+        tap(() => {
+          this.fetchRecipe('Failed to fetch recipes after deletion');
+        }),
+        catchError((error) => {
+          console.error('Failed to delete recipe:', error);
+          return throwError(() => new Error('Failed to delete recipe'));
+        })
+      );
   }
 
-  // Update recipe
-  updateRecipe(recipeId: string | null, title: string, process: string){
-    if (!recipeId) return;
-    this.recipes.update((recipe)=> recipe.map((recipe)=> {
-      if (recipe.id === recipeId) {
-        return {...recipe, title: title, process: process, ingredients: this.ingredientList};
-      } else {
-        return recipe;
-      }
-    }));
-    this.ingredientList = [];
-    this.saveRecipes();
-  }
-
-  // Add to favourites
-  toggleFavourite(recipeId: string){
-    this.recipes.update((recipe)=> recipe.map((recipe)=> {
-      if (recipe.id === recipeId) {
-      if ( recipe.favourites == true){
-          return {...recipe, favourites: false}
-        } else {
-          return {...recipe, favourites: true}
-        }
-       } else {
-        return recipe;
-       }
-    }));
-    this.saveRecipes();
-  }
-
-  // Remove Recipe
-  removeRecipe(recipeId: string){
-    this.recipes.update((recipe)=> recipe.filter((recipe)=> recipe.id !== recipeId))
-    this.saveRecipes();
-  }
-
-  // Edit title
-  editRecipeTitle(recipeId: string, title: string){
-    this.recipes.update((recipe)=> recipe.map((recipe)=> {
-      if (recipe.id === recipeId) {
-        return {...recipe, title: title}
-      } else {
-        return recipe;
-      }
-    }));
-    this.saveRecipes();
-  }
-
-  // Edit Process
-  editRecipeProcess(recipeId: string, process: string){
-    this.recipes.update((recipe)=> recipe.map((recipe)=> {
-      if (recipe.id === recipeId) {
-        return {...recipe, process: process}
-      } else {
-        return recipe;
-      }
-    }));
-    this.saveRecipes();
-  }
-
-  // Print All Recipe
-  printAllRecipes(){
-    console.log('All recipes:', this.recipes());
-  }
-
-  // Save Recipes
-  saveRecipes(){
-    localStorage.setItem('recipes', JSON.stringify(this.recipes()))
+  private fetchRecipe(errorMessage: string) {
+    const subscription = this.httpClient
+      .get<Recipe[]>(`${this.apiUrl}/recipes`)
+      .subscribe({
+        next: (resData) => {
+          console.log(resData);
+          this.recipes.set(resData);
+        },
+        error: (error) => {
+          console.log(error);
+          return throwError(() => new Error(errorMessage));
+        },
+      });
   }
 }

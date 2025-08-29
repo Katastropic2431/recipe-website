@@ -1,40 +1,59 @@
 <div class="center">
   <button type="button" mat-fab extended [routerLink]="'/'">
-    <mat-icon fontIcon="home" />Home
+    <mat-icon fontIcon="home"></mat-icon> Home
   </button>
   <button
     type="button"
     mat-fab
     extended
-    [routerLink]="`/recipe-edit-component/${getRecipeItem.id}`"
+    [routerLink]="['/recipe-edit-component', recipe?.id]"
+    [disabled]="!recipe"
   >
-    <mat-icon fontIcon="edit" /> Edit
+    <mat-icon fontIcon="edit"></mat-icon> Edit
   </button>
 </div>
-<mat-card class="recipe-card">
-  <div class="section-row">
-    <h1>{{ getRecipeItem.title }}</h1>
-    <button mat-fab extended class="edit-button" (click)="openDialogEditTitle()">
-      Edit Title
-    </button>
-  </div>
 
+<mat-card class="recipe-card" *ngIf="recipe">
   <div class="section-row">
     <h2>Ingredients</h2>
   </div>
   <ol>
-    @for (ingredients of getRecipeItem.ingredients; track ingredients ){
-    <li>
-      {{ ingredients.quanity }} {{ ingredients.unit }} of {{ ingredients.name }}
+    <li *ngFor="let ingredient of recipe.ingredients">
+      {{ ingredient.quantity }} {{ ingredient.unit }} of {{ ingredient.name }}
     </li>
-    }
   </ol>
 
-  <div class="section-row">
-    <h2>Process</h2>
-    <button mat-fab extended class="edit-button" (click)="openDialogEditProcess()">
-      Edit Process
-    </button>
-  </div>
-  <p>{{ getRecipeItem.process }}</p>
+  <mat-vertical-stepper #stepper>
+    <mat-step
+      *ngFor="let step of processSteps; let i = index"
+      [completed]="false"
+    >
+      <ng-template matStepLabel>Step {{ i + 1 }}</ng-template>
+
+      <p>{{ step }}</p>
+
+      <div class="stepper-actions">
+        <button
+          mat-fab
+          extended
+          (click)="stepper.next()"
+          *ngIf="i + 1 < processSteps.length"
+        >
+          Next
+        </button>
+        <button
+          mat-fab
+          extended
+          (click)="stepper.reset()"
+          *ngIf="i + 1 === processSteps.length"
+        >
+          Restart
+        </button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
 </mat-card>
+
+<div *ngIf="!recipe" class="loading">
+  <p>Loading recipe...</p>
+</div>

@@ -47,7 +47,7 @@ OR
     on-tertiary-fixed-variant: #374e00,
     background: #44433f,
     on-background: #1c1b1a,
-    surface: #fdf8f6,
+    surface: #44433f,
     surface-dim: #ddd9d7,
     surface-bright: #fdf8f6,
     surface-container-lowest: #ffffff,
@@ -193,3 +193,6 @@ body, img, html, table {
   width: 100%;
 }
 
+.mat-step-label.mat-step-label-active {
+    color: #efede4 !important; // Using !important to ensure it overrides, or make sure this rule loads last.
+}

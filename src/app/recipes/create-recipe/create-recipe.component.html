@@ -3,9 +3,8 @@
     class="float-child-element"
     [recipeTitle]="loadTitle"
     [recipeProcess]="loadProcess"
-    [recipieId]="recipeId"
+    [recipeId]="recipeId"
     [isEditMode]="isEditMode"
-    (addNewRecipe)="onAddRecipe($event)"
   ></app-new-recipe>
   <app-ingredients
     class="float-child-element"
@@ -22,7 +21,7 @@
     </header>
 
     <p>
-      {{ ingredient.quanity }} {{ ingredient.unit }} of {{ ingredient.name }}
+      {{ ingredient.quantity }} {{ ingredient.unit }} of {{ ingredient.name }}
     </p>
     <form>
       <button
