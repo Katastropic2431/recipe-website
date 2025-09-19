@@ -30,8 +30,6 @@ import { Recipe } from '../recipe.model';
 export class CreateRecipeComponent implements OnInit {
   route = inject(ActivatedRoute);
   recipeId: string = '';
-  loadTitle = '';
-  loadProcess = '';
   isEditMode = false;
   ingredients: Ingredients[] = [];
   recipe: Recipe | null = null; // Will hold the recipe fetched from the backend
@@ -62,9 +60,6 @@ export class CreateRecipeComponent implements OnInit {
     this.recipesService.getRecipeById(this.recipeId).subscribe({
       next: (data) => {
         this.recipe = data;
-        this.loadTitle = this.recipe.title;
-        this.loadProcess = this.recipe.process;
-        this.ingredients = this.recipe.ingredients;
       },
       error: (err) => console.error(err),
     });

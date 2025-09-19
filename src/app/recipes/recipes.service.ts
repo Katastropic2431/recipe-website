@@ -15,7 +15,7 @@ export class RecipesService {
   allIngredients = this.ingredientList.asReadonly();
 
   constructor() {
-    this.fetchRecipe('Failed to fetch recipes');
+    this.fetchAllRecipes('Failed to fetch recipes');
   }
 
   // api to get recipe by id
@@ -51,7 +51,7 @@ export class RecipesService {
         params: { id: recipeId },
       })
       .pipe(
-        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.fetchAllRecipes('Failed to fetch recipes after creation')),
         catchError((error) => {
           console.error('Failed to toggle favourite:', error);
           // Revert local state if API fails
@@ -81,7 +81,7 @@ export class RecipesService {
         recipePayload
       )
       .pipe(
-        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.fetchAllRecipes('Failed to fetch recipes after creation')),
         tap(() => this.clearIngredients()),
         catchError((error) => {
           console.error('Failed to create recipe:', error);
@@ -107,7 +107,7 @@ export class RecipesService {
     return this.httpClient
       .put<Recipe>(`${this.apiUrl}/recipes/${recipeId}`, recipePayload)
       .pipe(
-        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.fetchAllRecipes('Failed to fetch recipes after creation')),
         tap(() => this.clearIngredients()),
         catchError((error) => {
           console.error('Failed to update recipe:', error);
@@ -143,7 +143,7 @@ export class RecipesService {
     console.log('Deleting recipe with ID:', recipeId);
     return this.httpClient.delete(`${this.apiUrl}/recipes/${recipeId}`).pipe(
       tap(() => {
-        this.fetchRecipe('Failed to fetch recipes after deletion');
+        this.fetchAllRecipes('Failed to fetch recipes after deletion');
       }),
       catchError((error) => {
         console.error('Failed to delete recipe:', error);
@@ -152,7 +152,7 @@ export class RecipesService {
     );
   }
 
-  private fetchRecipe(errorMessage: string) {
+  private fetchAllRecipes(errorMessage: string) {
     const subscription = this.httpClient
       .get<Recipe[]>(`${this.apiUrl}/recipes`)
       .subscribe({
