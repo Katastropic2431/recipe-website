@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./recipe-website-backend
+      dockerfile: Dockerfile
+    container_name: recipe-api
+    ports:
+      - "8000:8000"
+    environment:
+      DB_URL: "sqlite:////app/db/test.db"
+    volumes:
+      - ./recipe-website-backend/db:/app/db
+
+  web:
+    build:
+      context: ./recipe-website
+      dockerfile: Dockerfile
+
+    container_name: recipe-web
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+    environment:
+      PUBLIC_API_URL: "http://api:8000"
+    restart: unless-stopped

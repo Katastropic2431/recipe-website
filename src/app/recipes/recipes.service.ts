@@ -15,16 +15,16 @@ export class RecipesService {
   allIngredients = this.ingredientList.asReadonly();
 
   constructor() {
-    this.fetchRecipe('Failed to fetch recipes');
+    this.fetchAllRecipes('Failed to fetch recipes');
   }
 
   // api to get recipe by id
   getRecipeById(recipeId: string) {
-    
     return this.httpClient
       .get<Recipe>(`${this.apiUrl}/recipes/${recipeId}`)
       .pipe(
         tap((recipe) => {
+          this.ingredientList.set([]);
           this.ingredientList.set(recipe.ingredients);
         }),
         catchError((error) => {
@@ -51,7 +51,7 @@ export class RecipesService {
         params: { id: recipeId },
       })
       .pipe(
-        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.fetchAllRecipes('Failed to fetch recipes after creation')),
         catchError((error) => {
           console.error('Failed to toggle favourite:', error);
           // Revert local state if API fails
@@ -81,7 +81,7 @@ export class RecipesService {
         recipePayload
       )
       .pipe(
-        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.fetchAllRecipes('Failed to fetch recipes after creation')),
         tap(() => this.clearIngredients()),
         catchError((error) => {
           console.error('Failed to create recipe:', error);
@@ -107,7 +107,7 @@ export class RecipesService {
     return this.httpClient
       .put<Recipe>(`${this.apiUrl}/recipes/${recipeId}`, recipePayload)
       .pipe(
-        tap(() => this.fetchRecipe('Failed to fetch recipes after creation')),
+        tap(() => this.fetchAllRecipes('Failed to fetch recipes after creation')),
         tap(() => this.clearIngredients()),
         catchError((error) => {
           console.error('Failed to update recipe:', error);
@@ -117,12 +117,10 @@ export class RecipesService {
   }
 
   addIngredient(ingredient: Ingredients) {
-    console.log('Adding ingredient:', ingredient);
-    this.ingredientList.update((currentIngredients) => [
-      ...currentIngredients,
-      ingredient,
-    ]);
-    console.log('Updated ingredient list:', this.ingredientList());
+    this.ingredientList.update((current) => {
+      if (current.some((i) => i.id === ingredient.id)) return current; // skip dup
+      return [...current, ingredient];
+    });
   }
 
   removeIngredient(id: string) {
@@ -143,20 +141,18 @@ export class RecipesService {
 
   deleteRecipe(recipeId: string) {
     console.log('Deleting recipe with ID:', recipeId);
-    return this.httpClient
-      .delete(`${this.apiUrl}/recipes/${recipeId}`)
-      .pipe(
-        tap(() => {
-          this.fetchRecipe('Failed to fetch recipes after deletion');
-        }),
-        catchError((error) => {
-          console.error('Failed to delete recipe:', error);
-          return throwError(() => new Error('Failed to delete recipe'));
-        })
-      );
+    return this.httpClient.delete(`${this.apiUrl}/recipes/${recipeId}`).pipe(
+      tap(() => {
+        this.fetchAllRecipes('Failed to fetch recipes after deletion');
+      }),
+      catchError((error) => {
+        console.error('Failed to delete recipe:', error);
+        return throwError(() => new Error('Failed to delete recipe'));
+      })
+    );
   }
 
-  private fetchRecipe(errorMessage: string) {
+  private fetchAllRecipes(errorMessage: string) {
     const subscription = this.httpClient
       .get<Recipe[]>(`${this.apiUrl}/recipes`)
       .subscribe({

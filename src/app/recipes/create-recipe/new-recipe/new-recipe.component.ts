@@ -16,8 +16,7 @@ import { Router } from '@angular/router';
   styleUrl: './new-recipe.component.css'
 })
 export class NewRecipeComponent implements OnInit {
-  recipeTitle = input<string>('');
-  recipeProcess = input<string>('');
+  recipe = input<Recipe|null>(null);
   recipeId = input<string>('');
   isEditMode = input<boolean>(false);
   enteredTitle = '';
@@ -30,21 +29,18 @@ export class NewRecipeComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.enteredTitle = this.recipeTitle();
-      this.enteredProcess = this.recipeProcess();
+      this.enteredTitle = this.recipe()!.title;
+      this.enteredProcess = this.recipe()!.process;
       this.enteredId = this.recipeId();
-      console.log('Entered Title:', this.enteredTitle);
-      console.log('Entered Process:', this.enteredProcess);
-      console.log('Entered ID:', this.enteredId);
     });
   }
 
   ingredients = input<Ingredients[]>([]);
   ngOnInit() {
-    this.enteredTitle = this.recipeTitle();
-    this.enteredProcess = this.recipeProcess();
-    console.log(this.recipeTitle());
-    console.log(this.recipeProcess());
+    this.enteredTitle = this.recipe()!.title;
+    this.enteredProcess = this.recipe()!.process;
+    console.log(this.recipe()!.title);
+    console.log(this.recipe()!.process);
   }
 
   onSubmit() {
