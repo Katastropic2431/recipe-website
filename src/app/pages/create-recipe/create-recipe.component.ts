@@ -6,14 +6,14 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { Ingredients, CreateIngredientsRequest } from '../ingredients.model';
-import { IngredientsComponent } from './ingredients/ingredients.component';
-import { NewRecipeComponent } from './new-recipe/new-recipe.component';
+import { Ingredients, CreateIngredientsRequest } from '../../interfaces/ingredients.model';
+import { IngredientsComponent } from '../../component/ingredients/ingredients.component';
+import { NewRecipeComponent } from '../../component/new-recipe/new-recipe.component';
 import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RecipesService } from '../recipes.service';
-import { Recipe } from '../recipe.model';
+import { RecipesService } from '../../services/recipes.service';
+import { Recipe } from '../../interfaces/recipe.model';
 
 @Component({
   selector: 'app-create-recipe',

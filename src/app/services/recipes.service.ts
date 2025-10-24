@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, DestroyRef, Signal } from '@angular/core';
-import { Recipe, createRecipeRequest } from './recipe.model';
-import { Ingredients } from './ingredients.model';
+import { Recipe, createRecipeRequest } from '../interfaces/recipe.model';
+import { Ingredients } from '../interfaces/ingredients.model';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, tap, throwError } from 'rxjs';
 @Injectable({

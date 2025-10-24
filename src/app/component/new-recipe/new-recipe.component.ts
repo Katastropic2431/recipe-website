@@ -1,11 +1,11 @@
-import { type Ingredients } from '../../ingredients.model';
+import { type Ingredients } from '../../interfaces/ingredients.model';
 import { Component, inject, output, input, OnInit, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RecipesService } from '../../recipes.service';
+import { RecipesService } from '../../services/recipes.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule} from '@angular/material/input'
 import { MatSelectModule} from '@angular/material/select';
-import { Recipe } from '../../recipe.model';
+import { Recipe } from '../../interfaces/recipe.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -39,8 +39,6 @@ export class NewRecipeComponent implements OnInit {
   ngOnInit() {
     this.enteredTitle = this.recipe()!.title;
     this.enteredProcess = this.recipe()!.process;
-    console.log(this.recipe()!.title);
-    console.log(this.recipe()!.process);
   }
 
   onSubmit() {
