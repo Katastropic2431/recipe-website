@@ -37,6 +37,7 @@ export class NewRecipeComponent implements OnInit {
 
   ingredients = input<Ingredients[]>([]);
   ngOnInit() {
+    console.log("TESTING", this.recipe());
     this.enteredTitle = this.recipe()!.title;
     this.enteredProcess = this.recipe()!.process;
   }

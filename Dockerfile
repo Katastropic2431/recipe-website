@@ -1,11 +1,11 @@
 FROM node:20-alpine
-WORKDIR /app
 
-# Copy everything
-COPY . .
+WORKDIR /usr/src/app
 
-# Install dependencies
-RUN npm ci --no-audit --fund=false
+COPY . /usr/src/app
 
-EXPOSE 4200
-CMD ["npm", "start"]
+RUN npm install -g @angular/cli
+
+RUN npm install
+
+CMD ["ng", "serve", "--host", "0.0.0.0"]

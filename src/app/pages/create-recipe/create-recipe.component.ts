@@ -60,6 +60,8 @@ export class CreateRecipeComponent implements OnInit {
     this.recipesService.getRecipeById(this.recipeId).subscribe({
       next: (data) => {
         this.recipe = data;
+        this.ingredients = this.recipe.ingredients
+        console.log('Fetched recipe for editing:', data);
       },
       error: (err) => console.error(err),
     });
